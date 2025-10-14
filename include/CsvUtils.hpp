@@ -6,8 +6,8 @@
 # include <sstream>
 # include <vector>
 # include <string>
-#include <stdexcept>
+# include "DataPoint.hpp"
+# include <stdexcept>
 
-std::vector<std::vector<std::string>> readCSV(const std::string& filename);
-std::vector<std::vector<int>> ParseData(std::vector<std::vector<std::string>> readData);
+std::vector<DataPoint> readCSV(const std::string& filename);
 #endif

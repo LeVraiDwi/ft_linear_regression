@@ -1,61 +1,90 @@
 #include "LinearReg.hpp"
 
-LinearReg::LinearReg(std::vector<std::vector<int>> data) {
+LinearReg::LinearReg(std::vector<DataPoint> data) {
     _data = data;
+    _theta.x = 0.0;
+    _theta.y = 0.0;
+    _normalizeData();
 }
 
 LinearReg::~LinearReg() {
 }
 
-std::vector<std::vector<int>>   LinearReg::GetData() {
+std::vector<DataPoint> LinearReg::GetData() {
     return _data;
 }
 
-void                            LinearReg::SetData(std::vector<std::vector<int>> data){
+void LinearReg::SetData(std::vector<DataPoint> data){
     _data = data;
 }
 
 
 double LinearReg::_estimatePrice(int mileage){
-    return _thetaX + (_thetaY * mileage);
+    return _theta.x + (_theta.y * mileage);
 }
 
-double LinearReg::_computeTheta(double learningRate, int gradiantIteration){
-    double  tmpThataX;
-    double  tmpThataY;
-    int     dataSize = _data.size();
+double LinearReg::_computeCost() {
+    double cost = 0.0;
+    for (DataPoint &d : _data) {
+        double pred = LinearReg::_estimatePrice(d.mileage);
+        cost += std::pow(pred - d.price, 2);
+    }
+    return cost / (2 * _data.size());
+}
 
-    for (int i = 0; i < gradiantIteration; i++) {
+void LinearReg::_computeTheta(){
+     double     tmpThataX = 0.0;
+     double     tmpThataY = 0.0;
+    int             dataSize = _data.size();
+    
+    double prevCost = _computeCost();
+    
+    for (int i = 0; i < ITERATION; i++) {
+        double sumErrorX = 0.0;
+        double sumErrorY = 0.0;
+
+        for (DataPoint& p: _data) {
+             double pred = LinearReg::_estimatePrice(p.mileage);
+            sumErrorX += pred - p.price;
+            sumErrorY += (pred - p.price) * p.mileage;
+        }
+        tmpThataX = (LEARNINGRATE / dataSize) * sumErrorX;
+        tmpThataY = (LEARNINGRATE / dataSize) * sumErrorY;
         
-        tmpThataX = learningRate * _computeGradiantThetaX();
-        tmpThataY = learningRate * _computeGradiantThetaY();
-        _thetaX = tmpThataX;
-        _thetaY = tmpThataY;
+        _theta.x-= tmpThataX;
+        _theta.y -= tmpThataY;
+        double cost = LinearReg::_computeCost();
+        
+        if (std::fabs(prevCost - cost) <  EPSILON)
+            std::cout << "Converged after " << i << " iterations.\n";
+            break;
+        prevCost = cost;
     }
     
 }
 
-double LinearReg::_computeGradiantThetaX() {
-    int     dataSize = _data.size();
-    double  sum = 0;
-    
-    for (std::vector<int> v : _data) {
-        sum += LinearReg::_estimatePrice(v[0]) * - v[1];
-    }
-    return sum / dataSize;
+void LinearReg::_normalizeData() {
+    std::vector<double> mileages;
+
+    mileages.reserve(_data.size()); // optimise les allocations
+    for (const auto &d : _data)
+        mileages.push_back(d.mileage);
+
+    _mean = Mean(mileages);
+    _stderr = StdErr(mileages);
+
+    for (auto &d : _data)
+        d.mileage = (d.mileage - _mean) / _stderr;
 }
 
-double LinearReg::_computeGradiantThetaY() {
-    int     dataSize = _data.size();
-    double  sum = 0;
+Theta LinearReg::ProcessTheta() {
+    _computeTheta();
     
-    for (std::vector<int> v : _data) {
-        sum += (LinearReg::_estimatePrice(v[0]) * - v[1]) * v[0];
-    }
-    return sum / dataSize;
-}
+    std::ofstream out("thetas.txt");
+    out << _theta.x - (_theta.y * _mean / _stderr) << " " << _theta.y / _stderr;
+    out.close();
 
-std::vector<double> LinearReg::ProcessTheta() {
-    _computeTheta(0.1, 1000);
-    return {_thetaX, _thetaY};
+    std::cout << "Training complete.\n";
+    std::cout << "θ0 = " << _theta.x - (_theta.y * _mean / _stderr) << ", θ1 = " << _theta.y / _stderr << std::endl;
+    return _theta;
 }

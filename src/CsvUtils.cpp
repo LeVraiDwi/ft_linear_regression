@@ -1,41 +1,27 @@
 #include "CsvUtils.hpp"
 
-std::vector<std::vector<std::string>> readCSV(const std::string& filename) {
-    std::vector<std::vector<std::string>> data;
+std::vector<DataPoint> readCSV(const std::string& filename) {
+    std::vector<DataPoint> data;
     std::ifstream file(filename);
-    
+    std::string line;
+
     if (!file.is_open()) {
         std::cerr << "Failed to open file: " << filename << std::endl;
         return data;
     }
-
-    std::string line;
+    
+    //skip first line
+    std::getline(file, line);
+    
     while (std::getline(file, line)) {
-        std::vector<std::string> row;
         std::stringstream ss(line);
-        std::string cell;
+        double mileage, price;
+        char comma;
 
-        while (std::getline(ss, cell, ',')) {
-            row.push_back(cell);
-        }
-
-        data.push_back(row);
+        if (ss >> mileage >> comma >> price)
+            data.push_back({mileage, price});
     }
 
     file.close();
     return data;
-}
-
-std::vector<std::vector<int>> ParseData(std::vector<std::vector<std::string>> readData) {
-    std::vector<std::vector<int>> retTable = {};
-    for (const auto& row : readData) {
-        if ( row.size() == 2 && !row[1].empty() && !row[0].empty() )
-            try {
-                retTable.push_back({std::stoi(row[0]), std::stoi(row[1])});
-            }
-            catch (...) {
-                std::cout << "fail to parse " << row[0] << " " << row[1] << std::endl;
-            }
-    }
-    return retTable;
 }

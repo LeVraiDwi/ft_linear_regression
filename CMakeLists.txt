@@ -8,10 +8,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(include)
 
 # Source files
-set(SOURCES
-    src/main.cpp
+set(COMMON_SOURCES
     src/CsvUtils.cpp
-    src/LinearReg.cpp
+    src/MathUtils.cpp
 )
 
-add_executable(MyProject ${SOURCES})
+add_executable(train src/train.cpp src/LinearReg.cpp ${COMMON_SOURCES})
+add_executable(predict src/predict.cpp ${COMMON_SOURCES})

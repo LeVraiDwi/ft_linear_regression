@@ -33,9 +33,9 @@ double LinearReg::_computeCost() {
 }
 
 void LinearReg::_computeTheta(){
-     double     tmpThataX = 0.0;
-     double     tmpThataY = 0.0;
-    int             dataSize = _data.size();
+    double     tmpThataX = 0.0;
+    double     tmpThataY = 0.0;
+    int        dataSize = _data.size();
     
     double prevCost = _computeCost();
     
@@ -65,26 +65,34 @@ void LinearReg::_computeTheta(){
 
 void LinearReg::_normalizeData() {
     std::vector<double> mileages;
+    std::vector<double> prices;
 
     mileages.reserve(_data.size()); // optimise les allocations
     for (const auto &d : _data)
+    {
         mileages.push_back(d.mileage);
+        prices.push_back(d.price);
+    }
+    _meanMile = Mean(mileages);
+    _stderrMile = StdErr(mileages);
 
-    _mean = Mean(mileages);
-    _stderr = StdErr(mileages);
+    _meanPrice = Mean(prices);
+    _stderrPrice = StdErr(prices);
 
-    for (auto &d : _data)
-        d.mileage = (d.mileage - _mean) / _stderr;
+    for (auto &d : _data) {
+        d.mileage = (d.mileage - _meanMile) / _stderrMile;
+        d.mileage = (d.mileage - _meanPrice) / _stderrPrice;
+    }
 }
 
 Theta LinearReg::ProcessTheta() {
     _computeTheta();
     
     std::ofstream out("thetas.txt");
-    out << _theta.x - (_theta.y * _mean / _stderr) << " " << _theta.y / _stderr;
+    out << _theta.x - _theta.y << " " << _theta.y << " " << _meanMile << " " << _stderrMile << " " << _meanPrice << " " << _stderrPrice;
     out.close();
 
     std::cout << "Training complete.\n";
-    std::cout << "θ0 = " << _theta.x - (_theta.y * _mean / _stderr) << ", θ1 = " << _theta.y / _stderr << std::endl;
+    std::cout << "θ0 = " << _theta.x - _theta.y << ", θ1 = " << _theta.y << std::endl;
     return _theta;
 }

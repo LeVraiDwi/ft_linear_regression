@@ -1,8 +1,5 @@
-#ifndef LINEARREG
-# define LINEARREG
-# define EPSILON 1e-6
-# define ITERATION 10000
-# define LEARNINGRATE 0.0001
+#ifndef PREDICTIONMODEL
+# define PREDICTIONMODEL
 
 # include <vector>
 # include <cmath>
@@ -13,7 +10,7 @@
 # include "DataPoint.hpp"
 # include "Theta.hpp"
 
-class LinearReg
+class PredictionModel
 {
     
     private:
@@ -26,15 +23,13 @@ class LinearReg
         double _stderrPrice;
 
         double _estimatePrice(int mileage);
-        void _computeTheta();
-        double _computeCost();
         void _normalizeData();
 
     public:
-        LinearReg(std::vector<DataPoint> data);
-        ~LinearReg();
+        PredictionModel(std::vector<DataPoint> data, double theta0, double theta1, double meanMile, double stderrMile, double meanPrice, double stderrPrice);
+        ~PredictionModel();
         std::vector<DataPoint>   GetData();
         void                     SetData(std::vector<DataPoint> data);
-        Theta ProcessTheta();
+        void                     Predict();
 };
 #endif

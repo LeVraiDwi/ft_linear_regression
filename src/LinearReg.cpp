@@ -27,9 +27,9 @@ double LinearReg::_computeCost() {
     double cost = 0.0;
     for (DataPoint &d : _data) {
         double pred = LinearReg::_estimatePrice(d.mileage);
-        cost += std::pow(pred - d.price, 2);
+        cost += (pred - d.price) * (pred - d.price);
     }
-    return cost / (2 * _data.size());
+    return cost / _data.size();
 }
 
 void LinearReg::_computeTheta(){
@@ -37,27 +37,30 @@ void LinearReg::_computeTheta(){
     double     tmpThataY = 0.0;
     int        dataSize = _data.size();
     
-    double prevCost = _computeCost();
+    double prevCost = 0.0;
     
     for (int i = 0; i < ITERATION; i++) {
-        double sumErrorX = 0.0;
-        double sumErrorY = 0.0;
+        double errorX = 0.0;
+        double errorY = 0.0;
 
         for (DataPoint& p: _data) {
-             double pred = LinearReg::_estimatePrice(p.mileage);
-            sumErrorX += pred - p.price;
-            sumErrorY += (pred - p.price) * p.mileage;
+            double pred = LinearReg::_estimatePrice(p.mileage);
+            errorX += pred - p.price;
+            errorY += (pred - p.price) * p.mileage;
         }
-        tmpThataX = (LEARNINGRATE / dataSize) * sumErrorX;
-        tmpThataY = (LEARNINGRATE / dataSize) * sumErrorY;
         
-        _theta.x-= tmpThataX;
-        _theta.y -= tmpThataY;
+        errorX /= dataSize;
+        errorY /= dataSize;
+
+        _theta.x -= LEARNINGRATE * errorX;
+        _theta.y -= LEARNINGRATE * errorY;
+
         double cost = LinearReg::_computeCost();
         
-        if (std::fabs(prevCost - cost) <  EPSILON)
+        if (i != 0 && std::fabs(prevCost - cost) <  EPSILON or (std::fabs(errorX) < MINGRAD && std::fabs(errorY) < MINGRAD)) {
             std::cout << "Converged after " << i << " iterations.\n";
             break;
+        }
         prevCost = cost;
     }
     
@@ -81,15 +84,21 @@ void LinearReg::_normalizeData() {
 
     for (auto &d : _data) {
         d.mileage = (d.mileage - _meanMile) / _stderrMile;
-        d.mileage = (d.mileage - _meanPrice) / _stderrPrice;
+        d.price = (d.price - _meanPrice) / _stderrPrice;
     }
+}
+
+void LinearReg::_deNormalizeData() {
+    _theta.y =  _theta.y * (_stderrPrice / _stderrMile);
+    _theta.x = _theta.x * _stderrPrice + _meanPrice - _theta.y * _meanMile;
 }
 
 Theta LinearReg::ProcessTheta() {
     _computeTheta();
     
+    _deNormalizeData();
     std::ofstream out("thetas.txt");
-    out << _theta.x - _theta.y << " " << _theta.y << " " << _meanMile << " " << _stderrMile << " " << _meanPrice << " " << _stderrPrice;
+    out << _theta.x - _theta.y << " " << _theta.y << EOF;
     out.close();
 
     std::cout << "Training complete.\n";

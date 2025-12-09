@@ -22,8 +22,7 @@ class PredictionModel
         double _meanPrice;
         double _stderrPrice;
 
-        double _estimatePrice(int mileage);
-        void _normalizeData();
+        double _estimatePrice(double mileage);
 
     public:
         PredictionModel(std::vector<DataPoint> data, double theta0, double theta1, double meanMile, double stderrMile, double meanPrice, double stderrPrice);

@@ -8,7 +8,6 @@ PredictionModel::PredictionModel(std::vector<DataPoint> data, double theta0, dou
     _stderrMile = stderrMile;
     _meanPrice = meanPrice;
     _stderrPrice = stderrPrice;
-    _normalizeData();
 }
 
 PredictionModel::~PredictionModel() {
@@ -22,40 +21,19 @@ void PredictionModel::SetData(std::vector<DataPoint> data){
     _data = data;
 }
 
-double _estimatePrice(double mileage) {
+double PredictionModel::_estimatePrice(double mileage) {
     return _theta.x + _theta.y * mileage;
 }
 
-double PredictionModel::_estimatePrice(int mileage){
-    return _theta.x + (_theta.y * mileage);
-}
-
-void PredictionModel::_normalizeData() {
-    std::vector<double> mileages;
-    std::vector<double> prices;
-
-    mileages.reserve(_data.size()); // optimise les allocations
-    for (const auto &d : _data)
-    {
-        mileages.push_back(d.mileage);
-        prices.push_back(d.price);
-    }
-    _meanMile = Mean(mileages);
-    _stderrMile = StdErr(mileages);
-
-    _meanPrice = Mean(prices);
-    _stderrPrice = StdErr(prices);
-
-    for (auto &d : _data) {
-        d.mileage = (d.mileage - _meanMile) / _stderrMile;
-        d.mileage = (d.mileage - _meanPrice) / _stderrPrice;
-    }
-}
-
-void Predict() {
-        for (DataPoint& d : _data) {
+void PredictionModel::Predict() {
+    std::ofstream out("predict.csv");
+    out << "km,price\n";
+    for (DataPoint& d : _data) {
         double price = _estimatePrice(d.mileage);
+        out << d.mileage << "," << price << "\n";
         std::cout << "Estimated price: " << price  << std::endl;
         std::cout << "Real price:      " << d.price << std::endl;
     }
+    out << std::endl;
+    out.close();
 }

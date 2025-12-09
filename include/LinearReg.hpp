@@ -1,14 +1,16 @@
 #ifndef LINEARREG
 # define LINEARREG
-# define EPSILON 1e-6
-# define ITERATION 10000
-# define LEARNINGRATE 0.0001
+# define EPSILON 1e-9
+# define MINGRAD 1e-6
+# define ITERATION 100000
+# define LEARNINGRATE 0.01
 
 # include <vector>
 # include <cmath>
 # include <iostream>
 # include <fstream>
 # include <sstream>
+# include <algorithm>
 # include "MathUtils.hpp"
 # include "DataPoint.hpp"
 # include "Theta.hpp"
@@ -29,6 +31,7 @@ class LinearReg
         void _computeTheta();
         double _computeCost();
         void _normalizeData();
+        void _deNormalizeData();
 
     public:
         LinearReg(std::vector<DataPoint> data);

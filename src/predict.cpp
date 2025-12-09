@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
     // Load trained parameters
     std::ifstream in("./thetas.txt");
     if (in.is_open())
-        in >> theta0 >> theta1 >> meanMile >> stderrMile >> meanPrice >> stderrPrice;
+        in >> theta0 >> theta1;
     in.close();
     PredictionModel predModel(data, theta0, theta1, meanMile, stderrMile, meanPrice, stderrPrice);
     predModel.Predict();

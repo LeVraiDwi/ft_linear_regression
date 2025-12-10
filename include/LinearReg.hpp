@@ -21,23 +21,24 @@ class LinearReg
     private:
         /* data */
         std::vector<DataPoint> _data;
-        Theta _theta;
+        std::vector<Theta> _theta;
         double _meanMile;
         double _stderrMile;
         double _meanPrice;
         double _stderrPrice;
 
-        double _estimatePrice(int mileage);
+        double _estimatePrice(const Theta t, int mileage);
         void _computeTheta();
-        double _computeCost();
+        double _computeCost(const Theta t);
         void _normalizeData();
-        void _deNormalizeData();
+        void _deNormalizeData(Theta *theta);
 
     public:
         LinearReg(std::vector<DataPoint> data);
         ~LinearReg();
-        std::vector<DataPoint>   GetData();
-        void                     SetData(std::vector<DataPoint> data);
-        Theta ProcessTheta();
+        std::vector<DataPoint>  GetData();
+        void                    SetData(std::vector<DataPoint> data);
+        void                    ProcessTheta();
+        void                    ExportTheta();
 };
 #endif

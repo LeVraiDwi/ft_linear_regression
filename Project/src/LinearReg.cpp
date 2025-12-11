@@ -52,7 +52,7 @@ void LinearReg::_computeTheta(){
         errorX /= dataSize;
         errorY /= dataSize;
 
-        theta.x -= LEARNINGRATE * errorX; 
+        theta.x -= LEARNINGRATE * errorX;
         theta.y -= LEARNINGRATE * errorY;
         Theta toAdd = new Theta(&theta);
         _deNormalizeData(&toAdd);

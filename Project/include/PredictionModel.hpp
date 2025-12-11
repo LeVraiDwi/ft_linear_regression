@@ -1,0 +1,30 @@
+#ifndef PREDICTIONMODEL
+# define PREDICTIONMODEL
+
+# include <vector>
+# include <cmath>
+# include <iostream>
+# include <fstream>
+# include <sstream>
+# include "MathUtils.hpp"
+# include "DataPoint.hpp"
+# include "Theta.hpp"
+
+class PredictionModel
+{
+    
+    private:
+        /* data */
+        std::vector<DataPoint> _data;
+        Theta _theta;
+
+        double _estimatePrice(double mileage);
+
+    public:
+        PredictionModel(std::vector<DataPoint> data, double theta0, double theta1);
+        ~PredictionModel();
+        std::vector<DataPoint>   GetData();
+        void                     SetData(std::vector<DataPoint> data);
+        double                   Predict(double mileage);
+};
+#endif

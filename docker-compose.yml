@@ -1,0 +1,8 @@
+services:
+  ubuntu:
+    image: projectenv:inc
+    build: ./docker/projectenv
+    volumes:
+      - ./Project:/home/
+    restart: always
+    container_name: project_container

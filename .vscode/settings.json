@@ -50,5 +50,6 @@
         "typeinfo": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled",
-    "cmake.sourceDirectory": "/sgoinfre/goinfre/Perso/tcosse/ft_linear_regression/Project"
+    "cmake.sourceDirectory": "/sgoinfre/goinfre/Perso/tcosse/ft_linear_regression/Project",
+    "python-envs.pythonProjects": []
 }

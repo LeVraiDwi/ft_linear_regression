@@ -45,3 +45,11 @@ build/*
 ./build/*
 */data/*
 ./data/*
+.vscode/launch.json
+.vscode/launch.json
+.vscode/*
+Project/Bonus/.venv/*
+Project/data/*
+Project/data/build/*
+Project/thetas.txt
+Project/thetasHisto.csv

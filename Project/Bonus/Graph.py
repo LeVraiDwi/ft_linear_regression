@@ -4,6 +4,7 @@ import sys
 import math
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 i = 1
 
@@ -60,24 +61,6 @@ def Corr(dataFrame: pd.DataFrame) -> list[float]:
         return 0
     return (cov / (std1 * std2)) / n # normalize with n
 
-# return correlation matrix
-def CorrMatrix(dataFrame: pd.DataFrame) -> pd.DataFrame:
-    
-    features = dataFrame.columns
-    n = len(features)
-    corr_matrix = np.zeros((n, n))
-
-    for i in range(1, n):
-        for j in range(1, n):
-            new_df = dataFrame[[features[i], features[j]]].dropna()
-            if (j >= i):
-                corr_matrix[i, j] = Corr(new_df)
-            else:
-                corr_matrix[i, j] = corr_matrix[j, i]
-    
-    corr_df = pd.DataFrame(corr_matrix, index=features, columns=features)
-    return corr_df
-
 def meanSQuareError(df):
     nbCol = len(df.columns)
     sum = 0
@@ -124,18 +107,32 @@ try:
     df_pred = pd.concat([df, df_prices], axis=1)
 
     df_final_pred = df_pred.iloc[:, [ 1, -1]]
-    cor = Corr(df_final_pred)
-    print(cor)
-    print(f"MSE: {meanSQuareError(df_pred)}")
 
+    mse = mean_squared_error(df_final_pred['price'], df_final_pred.iloc[:,-1:])
+    rmse = np.sqrt(mse)
+    mae = mean_absolute_error(df_final_pred['price'], df_final_pred.iloc[:,-1:])
+    r2 = r2_score(df_final_pred['price'], df_final_pred.iloc[:,-1:])
+
+    print("MSE :", mse)
+    print("RMSE:", rmse)
+    print("MAE :", mae)
+    print("R²  :", r2)
+
+    
     fig, axes = plt.subplots(nrows=1, ncols=2)
     axes[0].scatter(dataset_test['price'], dataset_test['km'])
     ln, = axes[0].plot(df_pred[f"price_{i}"], df_pred['km'])
+    axes[0].set_title(f"Data With Regression")
+    axes[0].set_xlabel("Price")
+    axes[0].set_ylabel("Mileage km")
     axes[1].scatter(
             df_final_pred['price'],
-            df_final_pred['price_2662'],
+            df_final_pred.iloc[:,-1:],
             alpha=0.5,
         )
+    axes[1].set_title(f"correlation between price and predicted price")
+    axes[1].set_xlabel("Price")
+    axes[1].set_ylabel("predicted price")
     i += 1
 
     def artist():
@@ -146,6 +143,9 @@ try:
         axes[0].clear()
         axes[0].scatter(dataset_test['price'], dataset_test['km'])
         axes[0].plot(df_pred[f"price_{i}"], df_pred['km'])
+        axes[0].set_title(f"Data With Regression")
+        axes[0].set_xlabel("Price")
+        axes[0].set_ylabel("Mileage km")
         i += 1
 
     amimation = FuncAnimation(fig, Update, interval=10, init_func=artist, cache_frame_data=False)

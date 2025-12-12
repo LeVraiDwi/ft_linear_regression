@@ -123,14 +123,19 @@ try:
     # 3) Concaténer une seule fois
     df_pred = pd.concat([df, df_prices], axis=1)
 
-    df_final_pred = df_pred.iloc[:, [0, 1, -1]]
-    cor_mat = CorrMatrix(df_final_pred)
-    print(cor_mat)
+    df_final_pred = df_pred.iloc[:, [ 1, -1]]
+    cor = Corr(df_final_pred)
+    print(cor)
     print(f"MSE: {meanSQuareError(df_pred)}")
 
-    fig, ax = plt.subplots()
-    ax.scatter(dataset_test['price'], dataset_test['km'])
-    ln, = ax.plot(df_pred[f"price_{i}"], df_pred['km'])
+    fig, axes = plt.subplots(nrows=1, ncols=2)
+    axes[0].scatter(dataset_test['price'], dataset_test['km'])
+    ln, = axes[0].plot(df_pred[f"price_{i}"], df_pred['km'])
+    axes[1].scatter(
+            df_final_pred['price'],
+            df_final_pred['price_2662'],
+            alpha=0.5,
+        )
     i += 1
 
     def artist():
@@ -138,9 +143,9 @@ try:
 
     def Update(frame):
         global i
-        ax.clear()
-        ax.scatter(dataset_test['price'], dataset_test['km'])
-        ax.plot(df_pred[f"price_{i}"], df_pred['km'])
+        axes[0].clear()
+        axes[0].scatter(dataset_test['price'], dataset_test['km'])
+        axes[0].plot(df_pred[f"price_{i}"], df_pred['km'])
         i += 1
 
     amimation = FuncAnimation(fig, Update, interval=10, init_func=artist, cache_frame_data=False)

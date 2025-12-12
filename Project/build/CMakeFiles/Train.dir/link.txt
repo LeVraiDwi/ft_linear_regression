@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/Train.dir/src/train.cpp.o CMakeFiles/Train.dir/src/CsvUtils.cpp.o CMakeFiles/Train.dir/src/MathUtils.cpp.o CMakeFiles/Train.dir/src/LinearReg.cpp.o -o Train 

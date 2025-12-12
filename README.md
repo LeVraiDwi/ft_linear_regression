@@ -12,9 +12,9 @@ Dans ce projet, on effectue une **régression linéaire simple** à une seule ca
 
 La droite cherchée est de la forme :  
 
-\[
+```math
 Y = aX + b
-\]
+```
 
 - **X** : variable d’entrée (ce qu’on connaît)  
 - **Y** : variable à prédire  
@@ -27,19 +27,19 @@ Y = aX + b
 
 Le **gradient descent** est une méthode permettant de **trouver les meilleurs paramètres d’un modèle** en réduisant progressivement l’erreur.
 
-- Il avance pas à pas dans la direction qui **diminue le plus rapidement l’erreur**.  
-- Ici, on cherche à déterminer les valeurs de **a** et **b** dans l’équation : \(Y = aX + b\).  
-- On initialise \(a = 0\) et \(b = 0\), puis on met à jour ces valeurs itérativement.
+- Il avance pas à pas dans la direction qui **diminue le plus rapidement l’erreur**  
+- Ici, on cherche à déterminer les valeurs de **a** et **b** dans l’équation \(Y = aX + b\)  
+- On initialise \(a = 0\) et \(b = 0\), puis on met à jour ces valeurs itérativement
 
 Formules pour la mise à jour :  
 
-\[
-b -= \text{learningRate} \times \frac{\sum(\text{estimatePrice}(mileage[i]) - price[i])}{m}  
-\]  
+```math
+b -= learningRate * \frac{\sum(\text{estimatePrice}(mileage[i]) - price[i])}{m}
+```
 
-\[
-a -= \text{learningRate} \times \frac{\sum((\text{estimatePrice}(mileage[i]) - price[i]) \cdot mileage[i])}{m}
-\]  
+```math
+a -= learningRate * \frac{\sum((\text{estimatePrice}(mileage[i]) - price[i]) * mileage[i])}{m}
+```
 
 Pour savoir **quand s’arrêter**, on calcule la **fonction de coût**, qui mesure l’erreur du modèle.  
 Lorsque sa valeur est suffisamment basse, on sauvegarde **a** et **b**.
@@ -65,26 +65,26 @@ Pour évaluer la **performance** de notre modèle, plusieurs métriques peuvent 
 ### MSE (Mean Squared Error)
 C’est la moyenne des carrés des erreurs.  
 - **Sensibilité aux grandes erreurs** : élevée  
-- **Utilisation** : lorsque les grandes erreurs doivent être pénalisées  
+- **À utiliser** : lorsque les grandes erreurs doivent être pénalisées  
 - **Unité** : carrée de la variable (ex : km², euro²)  
 
-\[
+```math
 \text{MSE} = \frac{\sum((\text{RealValue}[i] - \text{PredictedValue}[i])^2)}{n}
-\]
+```
 
 ### RMSE (Root Mean Squared Error)
 Même principe que MSE, mais exprimé dans la **même unité que la variable étudiée**.
 
-\[
+```math
 \text{RMSE} = \sqrt{\frac{\sum((\text{RealValue}[i] - \text{PredictedValue}[i])^2)}{n}}
-\]
+```
 
 ### MAE (Mean Absolute Error)
 Erreur absolue moyenne. Chaque erreur a le même poids, donc **moins sensible aux valeurs extrêmes**.
 
-\[
+```math
 \text{MAE} = \frac{\sum |\text{RealValue}[i] - \text{PredictedValue}[i]|}{n}
-\]
+```
 
 - Utile si l’on ne veut pas que des événements exceptionnels faussent la métrique globale  
 - Exemple : prédiction du trafic web quotidien
@@ -96,9 +96,9 @@ Mesure la **proportion de variance expliquée** par le modèle.
   - 0 → prédit aussi mal que la moyenne  
   - <0 → pire que la moyenne
 
-\[
+```math
 R^2 = 1 - \frac{\sum((\text{RealValue}[i] - \text{PredictedValue}[i])^2)}{\sum((\text{RealValue}[i] - \text{MeanValue})^2)}
-\]
+```
 
 **Exemple :**  
 - Moyenne du poids : 70 kg  
@@ -124,9 +124,9 @@ In this project, we perform a **simple linear regression** with a single feature
 
 The line is of the form:
 
-\[
+```math
 Y = aX + b
-\]
+```
 
 - **X**: input variable (known)  
 - **Y**: target variable (to predict)  
@@ -145,13 +145,13 @@ Gradient descent is a method that **finds the best model parameters** by gradual
 
 Update formulas:
 
-\[
-b -= \text{learningRate} \times \frac{\sum(\text{estimatePrice}(mileage[i]) - price[i])}{m}  
-\]  
+```math
+b -= learningRate * \frac{\sum(\text{estimatePrice}(mileage[i]) - price[i])}{m}
+```
 
-\[
-a -= \text{learningRate} \times \frac{\sum((\text{estimatePrice}(mileage[i]) - price[i]) \cdot mileage[i])}{m}
-\]
+```math
+a -= learningRate * \frac{\sum((\text{estimatePrice}(mileage[i]) - price[i]) * mileage[i])}{m}
+```
 
 To know **when to stop**, compute the **cost function**, which measures the model error.  
 When low enough, save **a** and **b**.
@@ -172,7 +172,7 @@ When low enough, save **a** and **b**.
 
 ## Metrics
 
-To evaluate the **model performance**, several metrics can be used.
+To evaluate **model performance**, several metrics can be used.
 
 ### MSE (Mean Squared Error)
 Average of squared errors.  
@@ -180,23 +180,23 @@ Average of squared errors.
 - **Use when** large errors should be penalized  
 - **Unit**: squared (e.g., km², euro²)
 
-\[
+```math
 \text{MSE} = \frac{\sum((\text{RealValue}[i] - \text{PredictedValue}[i])^2)}{n}
-\]
+```
 
 ### RMSE (Root Mean Squared Error)
-Same as MSE, but in the **same unit as the target variable**.
+Same as MSE but in the **same unit as the target variable**.
 
-\[
+```math
 \text{RMSE} = \sqrt{\frac{\sum((\text{RealValue}[i] - \text{PredictedValue}[i])^2)}{n}}
-\]
+```
 
 ### MAE (Mean Absolute Error)
 Average absolute error. Every error has the same weight, **less sensitive to outliers**.
 
-\[
+```math
 \text{MAE} = \frac{\sum |\text{RealValue}[i] - \text{PredictedValue}[i]|}{n}
-\]
+```
 
 - Useful when exceptional events should not skew the metric  
 - Example: predicting daily website traffic
@@ -208,12 +208,13 @@ Measures the **proportion of variance explained** by the model.
   - 0 → predicts as badly as the mean  
   - <0 → worse than the mean
 
-\[
+```math
 R^2 = 1 - \frac{\sum((\text{RealValue}[i] - \text{PredictedValue}[i])^2)}{\sum((\text{RealValue}[i] - \text{MeanValue})^2)}
-\]
+```
 
 **Example:**  
 - Average weight: 70 kg  
 - Predicts exact weight → R² = 1  
 - Always predicts 70 kg → R² = 0  
 - Completely wrong prediction → R² < 0
+
